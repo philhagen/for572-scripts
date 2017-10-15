@@ -1,5 +1,8 @@
 #!/bin/bash
-for i in 01; do
+
+DEMO_LIST="01"
+LAB_LIST="1.1"
+for i in $DEMO_LIST; do
     echo "Creating working directory for Demo ${i}"
     mkdir /cases/for572/demo-${i}
     if [ -f /mnt/hgfs/lab_data/Demo-${i}_source_evidence.zip ]; then
@@ -9,7 +12,7 @@ for i in 01; do
     echo
 done
 
-for i in $( seq -w 1 14); do
+for i in $LAB_LIST; do
     echo "Creating working directory for Lab ${i}"
     mkdir /cases/for572/lab-${i}
     if [ -f /mnt/hgfs/lab_data/Lab-${i}_source_evidence.zip ]; then
