@@ -8,6 +8,10 @@ if [ -s ~/distro_prep.txt ]; then
     exit 2
 fi
 
+echo "updating for572-scripts git clone"
+cd /usr/local/for572/src/for572-scripts
+git pull
+
 echo "clearing sansforensics and root users' cache and preference files"
 rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
 rm -f ~sansforensics/.mozilla/firefox/*.default/places.sqlite*
