@@ -10,6 +10,7 @@ if [ -d ${TARGET_DIR} ]; then
     if [ $? -ne 0 ]; then
         echo "ERROR: Something went wrong - you should manually remove the"
         echo "  ${TARGET_DIR} directory and try again."
+        exit 1
     fi
 
 else
@@ -20,16 +21,23 @@ else
     echo "  For572_Wkbk_D01_01"
     echo "              ^^^"
     echo
-    echo "  For the above version, enter the 'B01'.  If you enter an incorrect"
-    echo "  version string, this command will probably fail, but no small animals"
-    echo "  are likely to be injured.  I think."
+    echo "  For the above version, enter the 'D01'.  If you enter an incorrect"
+    echo "  version string, this command will fail."
     echo
     echo -n "Enter the version string: "
     read COURSE_VERSION
 
+    # convert response to uppercase and validate against regex
+    COURSE_VERSION=$( echo $COURSE_VERSION | tr '[:lower:]' '[:upper:]' )
+    if ! [[ ${COURSE_VERSION} =~ ^[A-Z][0-9][0-9]$ ]]; then
+        echo "ERROR: Courseware version string is not correct. Exiting."
+        exit 2;
+    fi
+
     echo "Attempting to retrieve version ${COURSE_VERSION}"
 
     git clone -b ${COURSE_VERSION} for572.com:commandlines ${TARGET_DIR} 2> /dev/null
+
     echo
     echo "You should now have a series of text files in the ${TARGET_DIR} directory."
 fi
