@@ -1,5 +1,17 @@
 #!/bin/bash
 
+if [ ! -z $SSH_CONN ]; then
+    echo "ERROR! This script must be run locally, not via ssh."
+    echo "quitting."
+    exit 2
+fi
+
+if [ ! $UID == 0 ]; then
+    echo "ERRO! This script must be run as root."
+    echo "quitting."
+    exit 2
+fi
+
 echo "looking for specific pre-distribution notes/instructions"
 if [ -s ~/distro_prep.txt ]; then
     echo "~/distro_prep.txt still contains instructions - Exiting."
@@ -17,14 +29,10 @@ rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
 rm -f ~sansforensics/.mozilla/firefox/*.default/places.sqlite*
 rm -f ~sansforensics/.mozilla/firefox/*.default/signons.sqlite
 rm -f ~sansforensics/.mozilla/firefox/*.default/cookies.sqlite
-rm -rf ~sansforensics/.config/google-chrome/Default
-rm -rf ~sansforensics/tmp/*
 rm -rf ~sansforensics/Downloads/*
-rm -rf ~sansforensics/.thumbnails/
-rm -rf ~sansforensics/.maltego/
 rm -rf ~sansforensics/.mono/
 rm -rf ~sansforensics/.ssh/
-cp -a ~sansforensics/.ssh-DIST/ ~sansforensics/.ssh
+cp -a ~sansforensics/.ssh.DIST/ ~sansforensics/.ssh
 rm -rf ~sansforensics/.cache/
 rm -f ~sansforensics/.bash_history
 rm -f ~sansforensics/.mysql_history
@@ -43,27 +51,23 @@ rm -f ~root/.viminfo
 rm -rf ~root/.cache/
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
 
-rm -f ~sansforensics/.config/wireshark/recent*
-rm -f ~sansforensics/.config/wireshark/ssl_keys
-rm -f ~sansforensics/.config/wireshark/preferences
-cp -a ~sansforensics/.config/wireshark/preferences.DIST ~sansforensics/.config/wireshark/preferences
-for ws_profile in profiles/no_desegment_tcp; do
-	rm -f ~sansforensics/.config/wireshark/${ws_profile}/recent*
-	rm -f ~sansforensics/.config/wireshark/${ws_profile}/ssl_keys
-	rm -rf ~sansforensics/.config/wireshark/${ws_profile}
-	cp -a ~sansforensics/.config/wireshark/${ws_profile}.DIST ~sansforensics/.config/wireshark/${ws_profile}
+for ws_profile in no_desegment_tcp; do
+	rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
+	cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 done
-for rmfile in ssl_keys recent recent_common; do
-	find ~sansforensics/.config/wireshark -name ${rmfile} -exec rm -f {} \;
+for rmfile in ssl_keys recent recent_common preferences; do
+    rm -f ~sansforensics/.config/wireshark/${rmfile}
+    if [ -f ~sansforensics/.config/wireshark/%{rmfile}.DIST ]; then
+        cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
+    fi
 done
 
 rm -rf ~sansforensics/.config/bless
 
-/sbin/ifconfig eth0 down
-rm -f /etc/udev/rules.d/70-persistent-net.rules
+/sbin/ifconfig ens33 down
 
-echo "clearing /cases"
-rm -rf /cases/for572/*
+echo "ensure /cases/for572/ only contains what is required from original evidence files"
+read
 
 echo "clearing logs"
 service rsyslog stop
@@ -81,18 +85,15 @@ fi
 read
 
 echo "zeroize swap:"
-swapoff -a
-for swappart in $( grep swap /etc/fstab | awk '{print $1}' ); do
+for swappart in $( swapon --show --noheadings | awk '{print $1}' ); do
+    swapuuid=$( swaplabel ${swappart} | awk '{print $2}' )
 	echo "- zeroize $swappart (swap)"
-	dd if=/dev/zero of=$swappart
-	mkswap $swappart
-done
-echo "zeroize free space:"
-for mtpt in $( df | grep ^\/dev\/ | awk '{print $6}' ); do
-	echo "- zeroize $mtpt"
-	dd if=/dev/zero of=$mtpt/ddfile
-	rm -f $mtpt/ddfile
+    swapoff -U ${swapuuid}
+	dd if=/dev/zero of=${swappart}
+	mkswap ${swappart} -U ${swapuuid}
 done
 
 echo "shrink all drives:"
-vmware-toolbox-cmd disk shrinkonly
+for shrinkpart in $( vmware-toolbox-cmd disk list ); do
+    vmware-toolbox-cmd shrink ${shrinkpart}
+done
