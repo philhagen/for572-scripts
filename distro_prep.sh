@@ -79,7 +79,7 @@ read
 
 echo "ACTION REQUIRED!"
 echo "remove any shared folders, touch up/re-version VM metadata/info, etc"
-if df | grep -q hgfs; then
+if df 2> /dev/null | grep -q hgfs; then
 	echo "- YOU CURRENTLY HAVE SHARED FOLDERS ACTIVE!!!"
 fi
 read
