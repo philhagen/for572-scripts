@@ -95,5 +95,5 @@ done
 
 echo "shrink all drives:"
 for shrinkpart in $( vmware-toolbox-cmd disk list ); do
-    vmware-toolbox-cmd shrink ${shrinkpart}
+    vmware-toolbox-cmd disk shrink ${shrinkpart}
 done
