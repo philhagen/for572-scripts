@@ -7,7 +7,7 @@ if [ ! -z $SSH_CONN ]; then
 fi
 
 if [ ! $UID == 0 ]; then
-    echo "ERRO! This script must be run as root."
+    echo "ERROR! This script must be run as root."
     echo "quitting."
     exit 2
 fi
