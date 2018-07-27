@@ -57,7 +57,7 @@ for ws_profile in no_desegment_tcp; do
 done
 for rmfile in ssl_keys recent recent_common preferences; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
-    if [ -f ~sansforensics/.config/wireshark/%{rmfile}.DIST ]; then
+    if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
     fi
 done
