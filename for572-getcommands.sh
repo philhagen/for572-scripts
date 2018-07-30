@@ -18,11 +18,12 @@ else
     echo "  Workbook.  You must supply the version number of your course materials"
     echo "  below.  To find this, look in the front cover of the workbook - you will"
     echo "  see something such as the following:"
-    echo "  For572_Wkbk_D01_01"
+    echo "  For572_Wkbk_D03_01"
     echo "              ^^^"
     echo
-    echo "  For the above version, enter the 'D01'.  If you enter an incorrect"
-    echo "  version string, this command will fail."
+    echo "  For the above version, enter the 'D03'.  If you enter an incorrect"
+    echo "  version string, this command will fail, your commands will be"
+    echo "  inconsistent with the course books, or both."
     echo
     echo -n "Enter the version string: "
     read COURSE_VERSION
