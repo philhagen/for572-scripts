@@ -40,6 +40,8 @@ rm -f ~sansforensics/.scapy_history
 rm -f ~sansforensics/.lesshst
 rm -f ~sansforensics/.viminfo
 rm -f ~sansforensics/.local/share/recently-used.xbel
+rm -f ~sansforensics/.recently-used
+rm -f ~sansforensics/.wget-hsts
 rm -rf ~sansforensics/.local/share/zeitgeist/*sqlite*
 rm -rf ~sansforensics/.local/share/gvfs-metadata/*
 rm -rf ~sansforensics/for572-commands/
@@ -49,6 +51,7 @@ rm -f ~root/.scapy_history
 rm -f ~root/.lesshst
 rm -f ~root/.viminfo
 rm -rf ~root/.cache/
+rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
 
 for ws_profile in no_desegment_tcp; do
