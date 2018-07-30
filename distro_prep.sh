@@ -67,7 +67,17 @@ rm -rf ~sansforensics/.config/bless
 /sbin/ifconfig ens33 down
 
 echo "ensure /cases/for572/ only contains what is required from original evidence files"
+echo "will do this automatically, but need to ensure source data is available at /mnt/hgfs/lab_data/ before proceeding"
 read
+rm -rf /cases/for572/*
+for lab in demo-01 lab-1.1 lab-1.2 lab-2.1 lab-2.2 lab-2.3 lab-3.1 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-4.3 lab-5.1 lab-5.2 lab-5.3; do
+    cd /cases/for572/
+    mkdir $lab
+    cd /cases/for572/$lab/
+    unzip /mnt/hgfs/lab_data/${lab}_source_evidence.zip
+done
+cd /cases/for572/
+chown -R sansforensics:sansforensics /cases/for572/*
 
 echo "clearing logs"
 service rsyslog stop
