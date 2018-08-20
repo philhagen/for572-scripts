@@ -1,12 +1,15 @@
 #!/bin/bash
 
 DISKSHRINK=1
+CASERELOAD=1
 # parse any command line arguments
 if [ $# -gt 0 ]; then
     while true; do
         if [ "$1" ]; then
             if [ "$1" == '-nodisk' ]; then
                 DISKSHRINK=0
+            else if [ "$1" == '-nocases' ]; then
+                CASERELOAD=0
             fi
             shift
         else
@@ -84,18 +87,20 @@ rm -rf ~sansforensics/.config/bless
 
 /sbin/ifconfig ens33 down
 
-echo "ensure /cases/for572/ only contains what is required from original evidence files"
-echo "will do this automatically, but need to ensure source data is available at /mnt/hgfs/lab_data/ before proceeding"
-read
-rm -rf /cases/for572/*
-for lab in demo-01 lab-1.1 lab-1.2 lab-2.1 lab-2.2 lab-2.3 lab-3.1 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-4.3 lab-5.1 lab-5.2 lab-5.3; do
+if [ $CASERELOAD -eq 1 ]; then
+    echo "ensure /cases/for572/ only contains what is required from original evidence files"
+    echo "will do this automatically, but need to ensure source data is available at /mnt/hgfs/lab_data/ before proceeding"
+    read
+    rm -rf /cases/for572/*
+    for lab in demo-01 lab-1.1 lab-1.2 lab-2.1 lab-2.2 lab-2.3 lab-3.1 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-4.3 lab-5.1 lab-5.2 lab-5.3; do
+        cd /cases/for572/
+        mkdir $lab
+        cd /cases/for572/$lab/
+        unzip /mnt/hgfs/lab_data/${lab}_source_evidence.zip
+    done
     cd /cases/for572/
-    mkdir $lab
-    cd /cases/for572/$lab/
-    unzip /mnt/hgfs/lab_data/${lab}_source_evidence.zip
-done
-cd /cases/for572/
-chown -R sansforensics:sansforensics /cases/for572/*
+    chown -R sansforensics:sansforensics /cases/for572/*
+fi
 
 echo "clearing logs"
 service rsyslog stop
@@ -112,7 +117,7 @@ if [ $DISKSHRINK -eq 1 ]; then
     echo "ACTION REQUIRED!"
     echo "remove any snapshots that already exist and press Return"
     read
-    
+
     echo "zeroize swap:"
     for swappart in $( swapon --show --noheadings | awk '{print $1}' ); do
         swapuuid=$( swaplabel ${swappart} | awk '{print $2}' )
@@ -121,14 +126,14 @@ if [ $DISKSHRINK -eq 1 ]; then
         dd if=/dev/zero of=${swappart}
         mkswap ${swappart} -U ${swapuuid}
     done
-    
+
     echo "zeroize disks:"
     for diskpart in $( mount | grep -e "xfs\|ext[234]" | awk '{print $1}' | uniq ); do
         echo "- zeroize ${diskpart}"
         dd if=/dev/zero of=${diskpart}/ddfile
         rm -f ${diskpart}/ddfile
     done
-    
+
     echo "shrink all drives:"
     for shrinkpart in $( vmware-toolbox-cmd disk list ); do
         vmware-toolbox-cmd disk shrink ${shrinkpart}
