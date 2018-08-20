@@ -8,7 +8,7 @@ if [ $# -gt 0 ]; then
         if [ "$1" ]; then
             if [ "$1" == '-nodisk' ]; then
                 DISKSHRINK=0
-            else if [ "$1" == '-nocases' ]; then
+            elif [ "$1" == '-nocases' ]; then
                 CASERELOAD=0
             fi
             shift
