@@ -128,7 +128,7 @@ if [ $DISKSHRINK -eq 1 ]; then
     done
 
     echo "zeroize disks:"
-    for diskpart in $( mount | grep -e "xfs\|ext[234]" | awk '{print $1}' | uniq ); do
+    for diskpart in $( mount | grep -e "xfs\|ext[234]" | awk '{print $3}' | grep -v ^\/var\/lib\/docker\/aufs$ ); do
         echo "- zeroize ${diskpart}"
         dd if=/dev/zero of=${diskpart}/ddfile
         rm -f ${diskpart}/ddfile
