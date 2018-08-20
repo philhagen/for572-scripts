@@ -1,5 +1,20 @@
 #!/bin/bash
 
+DISKSHRINK=1
+# parse any command line arguments
+if [ $# -gt 0 ]; then
+    while true; do
+        if [ "$1" ]; then
+            if [ "$1" == '-nodisk' ]; then
+                DISKSHRINK=0
+            fi
+            shift
+        else
+            break
+        fi
+    done
+fi
+
 if [ ! -z $SSH_CONN ]; then
     echo "ERROR! This script must be run locally, not via ssh."
     echo "quitting."
@@ -55,8 +70,8 @@ rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
 
 for ws_profile in no_desegment_tcp; do
-	rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
-	cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
+    rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
+    cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 done
 for rmfile in ssl_keys recent recent_common preferences; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
@@ -87,26 +102,35 @@ service rsyslog stop
 find /var/log -type f -exec rm -f {} \;
 
 echo "ACTION REQUIRED!"
-echo "remove any snapshots that already exist and press Return"
-read
-
-echo "ACTION REQUIRED!"
 echo "remove any shared folders, touch up/re-version VM metadata/info, etc"
 if df 2> /dev/null | grep -q hgfs; then
-	echo "- YOU CURRENTLY HAVE SHARED FOLDERS ACTIVE!!!"
+    echo "- YOU CURRENTLY HAVE SHARED FOLDERS ACTIVE!!!"
 fi
 read
 
-echo "zeroize swap:"
-for swappart in $( swapon --show --noheadings | awk '{print $1}' ); do
-    swapuuid=$( swaplabel ${swappart} | awk '{print $2}' )
-	echo "- zeroize $swappart (swap)"
-    swapoff -U ${swapuuid}
-	dd if=/dev/zero of=${swappart}
-	mkswap ${swappart} -U ${swapuuid}
-done
-
-echo "shrink all drives:"
-for shrinkpart in $( vmware-toolbox-cmd disk list ); do
-    vmware-toolbox-cmd disk shrink ${shrinkpart}
-done
+if [ $DISKSHRINK -eq 1 ]; then
+    echo "ACTION REQUIRED!"
+    echo "remove any snapshots that already exist and press Return"
+    read
+    
+    echo "zeroize swap:"
+    for swappart in $( swapon --show --noheadings | awk '{print $1}' ); do
+        swapuuid=$( swaplabel ${swappart} | awk '{print $2}' )
+        echo "- zeroize $swappart (swap)"
+        swapoff -U ${swapuuid}
+        dd if=/dev/zero of=${swappart}
+        mkswap ${swappart} -U ${swapuuid}
+    done
+    
+    echo "zeroize disks:"
+    for diskpart in $( mount | grep -e "xfs\|ext[234]" | awk '{print $1}' | uniq ); do
+        echo "- zeroize ${diskpart}"
+        dd if=/dev/zero of=${diskpart}/ddfile
+        rm -f ${diskpart}/ddfile
+    done
+    
+    echo "shrink all drives:"
+    for shrinkpart in $( vmware-toolbox-cmd disk list ); do
+        vmware-toolbox-cmd disk shrink ${shrinkpart}
+    done
+fi
