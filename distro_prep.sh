@@ -141,9 +141,9 @@ if [ $DISKSHRINK -eq 1 ]; then
         dd if=/dev/zero of=${diskpart}/ddfile
         rm -f ${diskpart}/ddfile
     done
-
-    echo "shrink all drives:"
-    for shrinkpart in $( vmware-toolbox-cmd disk list ); do
-        vmware-toolbox-cmd disk shrink ${shrinkpart}
-    done
 fi
+
+echo "shrink all drives:"
+for shrinkpart in $( vmware-toolbox-cmd disk list ); do
+    vmware-toolbox-cmd disk shrink ${shrinkpart}
+done
