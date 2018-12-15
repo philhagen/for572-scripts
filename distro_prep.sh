@@ -89,7 +89,7 @@ rm -rf ~sansforensics/.config/bless
 
 if [ $CASERELOAD -eq 1 ]; then
     labs='demo-01 lab-1.2 lab-2.1 lab-2.2 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-5.1 lab-5.2 lab-5.3'
-    placeholder_labs='lab-1.1 lab-2.3 lab-3.1 lab-4.3'
+    placeholder_labs='capstone lab-1.1 lab-2.3 lab-3.1 lab-4.3'
     echo "ensure /cases/for572/ only contains what is required from original evidence files"
     echo "will do this automatically, but need to ensure source data is available at /mnt/hgfs/lab_data/ before proceeding"
     read
