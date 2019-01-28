@@ -71,6 +71,7 @@ rm -f ~root/.viminfo
 rm -rf ~root/.cache/
 rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
+mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
 for ws_profile in no_desegment_tcp; do
     rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
