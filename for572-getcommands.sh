@@ -14,23 +14,24 @@ if [ -d ${TARGET_DIR} ]; then
     fi
 
 else
-    echo "This script will retrieve a list of all commands in the FOR572 Exercise"
-    echo "  Workbook.  You must supply the version number of your course materials"
-    echo "  below.  To find this, look in the front cover of the workbook - you will"
-    echo "  see something such as the following:"
-    echo "  For572_Wkbk_D03_01"
-    echo "              ^^^"
+    echo "You should not be seeing this message.  This mode of operation is only"
+    echo "  performed by the course lead while preparing the VM."
     echo
-    echo "  For the above version, enter the 'D03'.  If you enter an incorrect"
-    echo "  version string, this command will fail, your commands will be"
-    echo "  inconsistent with the course books, or both."
+    echo "This script will retrieve a list of all commands in the FOR572 Exercise"
+    echo "  Workbook.  You must supply the version number of the command lines"
+    echo "  to retrieve here."
+    echo
+    echo "  Example: A05b"
+    echo
+    echo "  If you enter an incorrect version string, this command will fail,"
+    echo "  your commands will be inconsistent with the course books, or both."
     echo
     echo -n "Enter the version string: "
     read COURSE_VERSION
 
     # convert response to uppercase and validate against regex
     COURSE_VERSION=$( echo $COURSE_VERSION | tr '[:lower:]' '[:upper:]' )
-    if ! [[ ${COURSE_VERSION} =~ ^[A-Z][0-9][0-9]$ ]]; then
+    if ! [[ ${COURSE_VERSION} =~ ^[A-Z][0-9][0-9][A-Z]?$ ]]; then
         echo "ERROR: Courseware version string is not correct. Exiting."
         exit 2;
     fi
