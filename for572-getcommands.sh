@@ -3,7 +3,7 @@
 TARGET_DIR=~/for572-commands/
 
 if [ -d ${TARGET_DIR} ]; then
-    echo "Looks like you've already run this... seeing if there are any updates"
+    echo "Checking to see if there are any updates to the command lines..."
     echo
     cd ${TARGET_DIR}
     git pull 2> /dev/null
@@ -14,7 +14,7 @@ if [ -d ${TARGET_DIR} ]; then
     fi
 
 else
-    echo "You should not be seeing this message.  This mode of operation is only"
+    echo "YOU SHOULD NOT BE SEEING THIS MESSAGE!  This mode of operation is only"
     echo "  performed by the course lead while preparing the VM."
     echo
     echo "This script will retrieve a list of all commands in the FOR572 Exercise"
