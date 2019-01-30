@@ -42,6 +42,10 @@ echo "updating for572-scripts git clone"
 cd /usr/local/for572/src/for572-scripts
 git pull
 
+echo "updating for572 command line text files"
+su - sansforensics -c /usr/local/for572/bin/for572-getcommands.sh
+
+
 echo "clearing sansforensics and root users' cache and preference files"
 rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
 rm -f ~sansforensics/.mozilla/firefox/*.default/places.sqlite*
@@ -62,7 +66,6 @@ rm -f ~sansforensics/.recently-used
 rm -f ~sansforensics/.wget-hsts
 rm -rf ~sansforensics/.local/share/zeitgeist/*sqlite*
 rm -rf ~sansforensics/.local/share/gvfs-metadata/*
-rm -rf ~sansforensics/for572-commands/
 rm -f ~root/.bash_history
 rm -f ~root/.mysql_history
 rm -f ~root/.scapy_history
