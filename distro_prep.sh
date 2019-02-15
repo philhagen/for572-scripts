@@ -51,6 +51,7 @@ rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
 rm -f ~sansforensics/.mozilla/firefox/*.default/places.sqlite*
 rm -f ~sansforensics/.mozilla/firefox/*.default/signons.sqlite
 rm -f ~sansforensics/.mozilla/firefox/*.default/cookies.sqlite
+rm -f ~sansforensics/.config/chromium/
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
 rm -rf ~sansforensics/.ssh/
