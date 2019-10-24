@@ -12,7 +12,7 @@ SOURCEPCAPS=/path/to/source/pcaps/
 DESTDIRROOT=/cases/for572/capstone/
 # Uncomment one or more of the annotated sections below, then run the script
 
-for srcfile in $( find ${SOURCEPCAPS} -type f ); do
+for srcfile in $( find -L ${SOURCEPCAPS} -type f ); do
     echo
     echo "- processing ${srcfile}";
 
