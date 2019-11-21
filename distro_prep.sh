@@ -67,6 +67,7 @@ rm -f ~sansforensics/.recently-used
 rm -f ~sansforensics/.wget-hsts
 rm -rf ~sansforensics/.local/share/zeitgeist/*sqlite*
 rm -rf ~sansforensics/.local/share/gvfs-metadata/*
+rm -rf ~sansforensics/.local/share/Trash/*
 rm -f ~root/.bash_history
 rm -f ~root/.mysql_history
 rm -f ~root/.scapy_history
