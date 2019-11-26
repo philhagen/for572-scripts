@@ -1,15 +1,19 @@
 #!/bin/bash
+
+TMPDIR=$( mktemp -d )
+
+if [ -f /etc/sysconfig/geoip ]; then
+    . /etc/sysconfig/geoip
+fi
+
 if [ ! -v GEOIP_LIBDIR ]; then
     GEOIP_LIBDIR=/usr/local/for572/Dshell/share/GeoIP
 fi
-GEOIP_CITYSOURCEURL=http://geolite.maxmind.com/download/geoip/database/GeoLiteCity.dat.gz
-GEOIP_CITY6SOURCEURL=http://geolite.maxmind.com/download/geoip/database/GeoLiteCityv6-beta/GeoLiteCityv6.dat.gz
-GEOIP_ASNSOURCEURL=http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNum.dat.gz
-GEOIP_ASN6SOURCEURL=http://download.maxmind.com/download/geoip/database/asnum/GeoIPASNumv6.dat.gz
-GEOIP_CITYSOURCEFILE=GeoLiteCity.dat.gz
-GEOIP_CITY6SOURCEFILE=GeoLiteCityv6.dat.gz
-GEOIP_ASNSOURCEFILE=GeoIPASNum.dat.gz
-GEOIP_ASN6SOURCEFILE=GeoIPASNumv6.dat.gz
+
+GEOIP_COUNTRYSOURCEFILE=GeoLite2-Country.tar.gz
+GEOIP_CITYSOURCEFILE=GeoLite2-City.tar.gz
+GEOIP_ASNSOURCEFILE=GeoLite2-ASN.tar.gz
+GEOIP_BASEURL=https://geolite.maxmind.com/download/geoip/database
 RUNNOW=0
 
 # parse any command line arguments
@@ -26,7 +30,6 @@ if [ $# -gt 0 ]; then
     done
 fi
 
-
 if [ ! -d ${GEOIP_LIBDIR} ]; then
     mkdir -p ${GEOIP_LIBDIR}
 fi
@@ -38,12 +41,11 @@ if [ $RUNNOW -eq 0 ]; then
     sleep ${randomNumber}
 fi
 
-cd ${GEOIP_LIBDIR}
-wget -N -q ${GEOIP_CITYSOURCEURL}
-gunzip -f ${GEOIP_CITYSOURCEFILE}
-wget -N -q ${GEOIP_CITY6SOURCEURL}
-gunzip -f ${GEOIP_CITY6SOURCEFILE}
-wget -N -q ${GEOIP_ASNSOURCEURL}
-gunzip -f ${GEOIP_ASNSOURCEFILE}
-wget -N -q ${GEOIP_ASN6SOURCEURL}
-gunzip -f ${GEOIP_ASN6SOURCEFILE}
+for i in ${GEOIP_COUNTRYSOURCEFILE} ${GEOIP_CITYSOURCEFILE} ${GEOIP_ASNSOURCEFILE}; do
+    curl -s -o ${TMPDIR}/${i} ${GEOIP_BASEURL}/${i}
+    tar xzf ${TMPDIR}/${i} -C ${TMPDIR}
+done
+
+find ${TMPDIR} -type f -name *.mmdb -exec mv {} ${GEOIP_LIBDIR}/ \;
+
+rm -rf ${TMPDIR}
