@@ -7,7 +7,7 @@ if [ -f /etc/sysconfig/geoip ]; then
 fi
 
 if [ ! -v GEOIP_LIBDIR ]; then
-    GEOIP_LIBDIR=/usr/local/for572/Dshell/share/GeoIP
+    GEOIP_LIBDIR=/usr/local/for572/share/GeoIP
 fi
 
 GEOIP_COUNTRYSOURCEFILE=GeoLite2-Country.tar.gz
