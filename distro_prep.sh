@@ -54,7 +54,6 @@ rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
 rm -rf ~sansforensics/.ssh/
 cp -a ~sansforensics/.ssh.DIST/ ~sansforensics/.ssh
-rm -rf ~sansforensics/.cache/
 rm -f ~sansforensics/.bash_history
 rm -f ~sansforensics/.mysql_history
 rm -f ~sansforensics/.scapy_history
