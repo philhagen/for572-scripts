@@ -43,13 +43,12 @@ cd /usr/local/for572/src/for572-scripts
 git pull
 
 echo "updating for572 workbook"
-su - sansforensics -c bash /var/www/html/workbook/resources/workbook-update.sh
+su - sansforensics -c "bash /var/www/html/workbook/resources/workbook-update.sh"
 
-echo "clearing sansforensics and root users' cache and preference files"
-rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
-rm -f ~sansforensics/.mozilla/firefox/*.default/places.sqlite*
-rm -f ~sansforensics/.mozilla/firefox/*.default/signons.sqlite
-rm -f ~sansforensics/.mozilla/firefox/*.default/cookies.sqlite
+echo "clearing sansforensics and root users' preference files"
+rm -f ~sansforensics/.mozilla/firefox/*.default*/places.sqlite*
+rm -f ~sansforensics/.mozilla/firefox/*.default*/signons.sqlite
+rm -f ~sansforensics/.mozilla/firefox/*.default*/cookies.sqlite
 rm -rf ~sansforensics/.config/chromium/
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
@@ -81,14 +80,12 @@ for ws_profile in no_desegment_tcp; do
     rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
     cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 done
-for rmfile in ssl_keys recent recent_common preferences; do
+for rmfile in rsa_keys recent recent_common preferences; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
     if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
     fi
 done
-
-rm -rf ~sansforensics/.config/bless
 
 /sbin/ifconfig ens33 down
 
