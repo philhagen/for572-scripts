@@ -42,9 +42,8 @@ echo "updating for572-scripts git clone"
 cd /usr/local/for572/src/for572-scripts
 git pull
 
-echo "updating for572 command line text files"
-su - sansforensics -c /usr/local/for572/bin/for572-getcommands.sh
-
+echo "updating for572 workbook"
+su - sansforensics -c bash /var/www/html/workbook/resources/workbook-update.sh
 
 echo "clearing sansforensics and root users' cache and preference files"
 rm -rf ~sansforensics/.mozilla/firefox/*.default/Cache/*
@@ -148,14 +147,14 @@ if [ $DISKSHRINK -eq 1 ]; then
         swapuuid=$( swaplabel ${swappart} | awk '{print $2}' )
         echo "- zeroize $swappart (swap)"
         swapoff -U ${swapuuid}
-        dd if=/dev/zero of=${swappart}
+        shred -n 0 -z -v ${swappart}
         mkswap ${swappart} -U ${swapuuid}
     done
 
     echo "zeroize disks:"
     for diskpart in $( mount | grep -e "xfs\|ext[234]" | awk '{print $3}' | grep -v ^\/var\/lib\/docker\/aufs$ ); do
         echo "- zeroize ${diskpart}"
-        dd if=/dev/zero of=${diskpart}/ddfile
+        dc3dd if=/dev/zero of=${diskpart}/ddfile
         rm -f ${diskpart}/ddfile
     done
 fi
