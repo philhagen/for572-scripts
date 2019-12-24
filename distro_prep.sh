@@ -45,11 +45,15 @@ git pull
 echo "updating for572 workbook"
 su - sansforensics -c "bash /var/www/html/workbook/resources/workbook-update.sh"
 
+echo "Set up the Chromium browser how it needs to be configured (home page, new tab setup, etc)"
+rm -rf ~sansforensics/.config/chromium/
+echo "press enter when done"
+read
+
 echo "clearing sansforensics and root users' preference files"
 rm -f ~sansforensics/.mozilla/firefox/*.default*/places.sqlite*
 rm -f ~sansforensics/.mozilla/firefox/*.default*/signons.sqlite
 rm -f ~sansforensics/.mozilla/firefox/*.default*/cookies.sqlite
-rm -rf ~sansforensics/.config/chromium/
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
 rm -rf ~sansforensics/.ssh/
