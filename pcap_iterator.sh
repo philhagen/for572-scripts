@@ -1,12 +1,12 @@
 #!/bin/bash
-# (C)2019 Lewes Technology Consulting, LLC
+# (C)2020 Lewes Technology Consulting, LLC
 
 # This script will traverse a directory tree full of pcap files and run a set 
 #   of commands against each pcap file.
 # As distributed, it's designed to handle the capstone data in FOR572, but you
 #   can adjust it as needed for other situations.
 
-# Set thsese two variables as needed.  Be mindful of the space available in
+# Set these two variables as needed.  Be mindful of the space available in
 #   $DEST_DIR_ROOT, as the commands below may require a LOT of disk space.
 SOURCE_PCAPS=/path/to/source/pcaps/
 DEST_DIR_ROOT=/cases/for572/capstone/
