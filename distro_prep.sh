@@ -2,6 +2,10 @@
 
 DISKSHRINK=1
 CASERELOAD=1
+
+labs='demo-01 lab-1.2 lab-2.1 lab-2.2 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-5.1 lab-5.2 lab-5.3'
+placeholder_labs='capstone lab-1.1 lab-2.3 lab-3.1 lab-4.3'
+
 # parse any command line arguments
 if [ $# -gt 0 ]; then
     while true; do
@@ -36,6 +40,13 @@ if [ -s ~/distro_prep.txt ]; then
     echo
     cat ~/distro_prep.txt
     exit 2
+fi
+
+if [ $CASERELOAD -eq 1 ]; then
+    if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
+        echo "ERROR: Required source directories in /mnt/hgfs/ are not availalble - exiting."
+        exit 2
+    fi
 fi
 
 echo "updating for572-scripts git clone"
@@ -93,12 +104,6 @@ done
 /sbin/ifconfig ens33 down
 
 if [ $CASERELOAD -eq 1 ]; then
-    if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
-        echo "ERROR: Required source directories in /mnt/hgfs/ are not availalble - exiting."
-        exit 2
-    fi
-    labs='demo-01 lab-1.2 lab-2.1 lab-2.2 lab-3.2 lab-3.3 lab-4.1 lab-4.2 lab-5.1 lab-5.2 lab-5.3'
-    placeholder_labs='capstone lab-1.1 lab-2.3 lab-3.1 lab-4.3'
     echo "ensure /cases/for572/ only contains what is required from original evidence files"
     echo "will do this automatically, but need to ensure source data is available at /mnt/hgfs/lab_data/ before proceeding"
     read
