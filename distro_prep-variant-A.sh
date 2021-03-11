@@ -90,6 +90,7 @@ rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
+echo "resetting Wireshark profiles"
 for ws_profile in no_desegment_tcp; do
     rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
     cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
@@ -100,6 +101,13 @@ for rmfile in rsa_keys recent recent_common preferences; do
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
     fi
 done
+
+echo "Resetting GeoIP data"
+rm -f /usr/local/for572/share/GeoIP/*.mmdb
+for dist in ASN City Country; do
+    cp /usr/local/for572/src/geoip-bootstraps/empty-GeoLite2-${dist}.mmdb /usr/local/for572/share/GeoIP/GeoLite2-${dist}.mmdb
+done
+rm -f /etc/cron.d/geoipupdate
 
 /sbin/ifconfig ens33 down
 
@@ -162,9 +170,9 @@ if [ $DISKSHRINK -eq 1 ]; then
         dd if=/dev/zero of=${diskpart}/ddfile
         rm -f ${diskpart}/ddfile
     done
-fi
 
-echo "shrink all drives:"
-for shrinkpart in $( vmware-toolbox-cmd disk list ); do
-    vmware-toolbox-cmd disk shrink ${shrinkpart}
-done
+    echo "shrink all drives:"
+    for shrinkpart in $( vmware-toolbox-cmd disk list ); do
+        vmware-toolbox-cmd disk shrink ${shrinkpart}
+    done
+fi
