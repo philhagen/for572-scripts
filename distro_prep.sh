@@ -56,31 +56,19 @@ git pull
 echo "updating for572 workbook"
 su - sansforensics -c "bash /var/www/html/workbook/resources/workbook-update.sh"
 
-echo "Set up the Chromium browser how it needs to be configured (home page, new tab setup, etc)"
-rm -rf ~sansforensics/.config/chromium/
-echo "press enter when done"
-read
-
 echo "clearing sansforensics and root users' preference files"
-rm -f ~sansforensics/.mozilla/firefox/*.default*/places.sqlite*
-rm -f ~sansforensics/.mozilla/firefox/*.default*/signons.sqlite
-rm -f ~sansforensics/.mozilla/firefox/*.default*/cookies.sqlite
+sudo -u sansforensics bleachbit -c firefox.* chromium.* bash.history gnome.* system.cache system.recent_documents system.trash
+bleachbit -c apt.* bash.history system.rotated_logs
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
 rm -rf ~sansforensics/.ssh/
 cp -a ~sansforensics/.ssh.DIST/ ~sansforensics/.ssh
-rm -f ~sansforensics/.bash_history
 rm -f ~sansforensics/.mysql_history
 rm -f ~sansforensics/.scapy_history
 rm -f ~sansforensics/.lesshst
 rm -f ~sansforensics/.viminfo
-rm -f ~sansforensics/.local/share/recently-used.xbel
-rm -f ~sansforensics/.recently-used
 rm -f ~sansforensics/.wget-hsts
-rm -rf ~sansforensics/.local/share/zeitgeist/*sqlite*
-rm -rf ~sansforensics/.local/share/gvfs-metadata/*
 rm -rf ~sansforensics/.local/share/Trash/*
-rm -f ~root/.bash_history
 rm -f ~root/.mysql_history
 rm -f ~root/.scapy_history
 rm -f ~root/.lesshst
