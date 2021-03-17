@@ -1,6 +1,6 @@
 #!/usr/bin/python
-import urllib
+import urllib.parse
 import sys
 
 for line in sys.stdin:
-	sys.stdout.write(urllib.quote(line))
+	sys.stdout.write(urllib.parse.quote(line))
