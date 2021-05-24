@@ -83,7 +83,7 @@ for ws_profile in no_desegment_tcp; do
     rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
     cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 done
-for rmfile in rsa_keys recent recent_common preferences; do
+for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_db_paths; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
     if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
