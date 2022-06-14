@@ -76,6 +76,7 @@ rm -f ~root/.viminfo
 rm -rf ~root/.cache/
 rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
+rm -f /etc/GeoIP.conf
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
 echo "resetting Wireshark profiles"
