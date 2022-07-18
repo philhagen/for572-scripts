@@ -41,10 +41,12 @@ if [ -s ~/distro_prep.txt ]; then
     cat ~/distro_prep.txt
     exit 2
 fi
+echo
 
 echo "Please confirm the ~sansforensics/.ssh/* files are correct and free of detritus."
 echo "Press return if you've completed this."
 read
+echo
 
 if [ $CASERELOAD -eq 1 ]; then
     if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
