@@ -42,6 +42,10 @@ if [ -s ~/distro_prep.txt ]; then
     exit 2
 fi
 
+echo "Please confirm the ~sansforensics/.ssh/* files are correct and free of detritus."
+echo "Press return if you've completed this."
+read
+
 if [ $CASERELOAD -eq 1 ]; then
     if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
         echo "ERROR: Required source directories in /mnt/hgfs/ are not availalble - exiting."
@@ -61,8 +65,6 @@ sudo -u sansforensics bleachbit -c firefox.* chromium.* bash.history gnome.* sys
 bleachbit -c apt.* bash.history system.rotated_logs
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
-rm -rf ~sansforensics/.ssh/
-cp -a ~sansforensics/.ssh.DIST/ ~sansforensics/.ssh
 rm -f ~sansforensics/.mysql_history
 rm -f ~sansforensics/.scapy_history
 rm -f ~sansforensics/.lesshst

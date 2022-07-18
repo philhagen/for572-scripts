@@ -42,6 +42,10 @@ if [ -s ~/distro_prep.txt ]; then
     exit 2
 fi
 
+echo "Please confirm the ~sansforensics/.ssh/* files are correct and free of detritus."
+echo "Press return if you've completed this."
+read
+
 if [ $CASERELOAD -eq 1 ]; then
     if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
         echo "ERROR: Required source directories in /mnt/hgfs/ are not availalble - exiting."
@@ -61,8 +65,6 @@ sudo -u sansforensics bleachbit -c firefox.* chromium.* bash.history gnome.* sys
 bleachbit -c apt.* bash.history system.rotated_logs
 rm -rf ~sansforensics/Downloads/*
 rm -rf ~sansforensics/.mono/
-rm -rf ~sansforensics/.ssh/
-cp -a ~sansforensics/.ssh.DIST/ ~sansforensics/.ssh
 rm -f ~sansforensics/.mysql_history
 rm -f ~sansforensics/.scapy_history
 rm -f ~sansforensics/.lesshst
@@ -77,6 +79,7 @@ rm -rf ~root/.cache/
 rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
 rm -f /etc/GeoIP.conf
+rm -f /var/spool/mail/*
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
 echo "resetting Wireshark profiles"
@@ -84,7 +87,7 @@ for ws_profile in no_desegment_tcp; do
     rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
     cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 done
-for rmfile in rsa_keys recent recent_common preferences; do
+for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_db_paths; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
     if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
