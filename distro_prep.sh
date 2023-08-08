@@ -97,11 +97,12 @@ for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_d
 done
 
 echo "Resetting GeoIP data"
-rm -f /usr/local/for572/share/GeoIP/*.mmdb
-for dist in ASN City Country; do
-    cp /usr/local/for572/src/geoip-bootstraps/empty-GeoLite2-${dist}.mmdb /usr/local/for572/share/GeoIP/GeoLite2-${dist}.mmdb
+for GEOIPDB in ASN Country City; do
+    rm -f /usr/local/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
+    curl -s -L -o /usr/local/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb https://lewestech.com/dist/GeoLite2-${GEOIPDB}.mmdb
 done
-rm -f /etc/cron.d/geoipupdate
+rm -rf /etc/GeoIP.conf
+rm -rf /etc/cron.d/geoipupdate
 
 /sbin/ifconfig ens33 down
 
