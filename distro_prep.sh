@@ -57,7 +57,7 @@ fi
 
 echo "updating for572-scripts git clone"
 cd /usr/local/for572/src/for572-scripts
-git pull
+su - sansforensics -c "git pull"
 
 echo "updating for572 workbook"
 su - sansforensics -c "bash /var/www/html/workbook/resources/workbook-update.sh"
