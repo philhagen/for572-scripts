@@ -80,6 +80,7 @@ rm -f ~root/.viminfo
 rm -rf ~root/.cache/
 rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
+rm -f /etc/GeoIP.conf
 rm -f /var/spool/mail/*
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
@@ -96,13 +97,12 @@ for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_d
 done
 
 echo "Resetting GeoIP data"
-for GEOIPDB in ASN Country City; do
-    rm -f /usr/local/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
-    curl -s -L -o /usr/local/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb https://lewestech.com/dist/GeoLite2-${GEOIPDB}.mmdb
-    chmod 644 /usr/local/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
+for GEOIPDB in ASN City Country; do
+    rm -f /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
+    curl -s -L -o /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb https://lewestech.com/dist/GeoLite2-${GEOIPDB}.mmdb
+    chmod 644 /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
 done
-rm -rf /etc/GeoIP.conf
-rm -rf /etc/cron.d/geoipupdate
+rm -f /etc/cron.d/geoipupdate
 
 /sbin/ifconfig ens33 down
 
