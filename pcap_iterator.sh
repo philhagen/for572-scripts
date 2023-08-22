@@ -37,6 +37,14 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     #mkdir -p ${DEST_DIR_ROOT}/$directory/tcpdump_reduced
     #tcpdump -n -s 0 -r ${src_file} -w ${DEST_DIR_ROOT}/${directory}/tcpdump_reduced/${TRAFFIC_TYPE}_${filename} ${BPF}
 
+###### TRIMPCAP ######
+    # Uncomment the following two commands.
+    # $TRIM_LENGTH is an integer for the maximum number of bytes per flow that will be retained
+    # WARNING WARNING WARNING: The trimpcap.py command OVERWRITES the source file so be sure you don't need the original data
+    # THERE IS NO UNDO BUTTON HERE!!!!!
+    #$TRIM_LENGTH=30280
+    #trimpcap.py $TRIM_LENGTH ${src_file}
+
 ###### ZEEK ######
     # Uncomment the following two commands to create an output directory for
     #   each input pcap file, as required for Zeek processing
