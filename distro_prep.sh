@@ -73,6 +73,7 @@ rm -f ~sansforensics/.lesshst
 rm -f ~sansforensics/.viminfo
 rm -f ~sansforensics/.wget-hsts
 rm -rf ~sansforensics/.local/share/Trash/*
+rm -rf ~sansforensics/.local/share/ijq/
 rm -f ~root/.mysql_history
 rm -f ~root/.scapy_history
 rm -f ~root/.lesshst
