@@ -1,5 +1,5 @@
 #!/bin/bash
-# (C)2020 Lewes Technology Consulting, LLC
+# (C)2023 Lewes Technology Consulting, LLC
 
 # This script will traverse a directory tree full of pcap files and run a set 
 #   of commands against each pcap file.
@@ -8,12 +8,11 @@
 
 # Set these two variables as needed.  Be mindful of the space available in
 #   $DEST_DIR_ROOT, as the commands below may require a LOT of disk space.
-SOURCE_PCAPS=/path/to/source/pcaps/
-DEST_DIR_ROOT=/cases/for572/capstone/
-# Uncomment one or more of the annotated sections below, then run the script
+SOURCE_PCAPS="/path/to/source/pcaps/"
+DEST_DIR_ROOT="/cases/for572/capstone/"
 
+# Uncomment one or more of the annotated sections below, then run the script
 for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
-    echo
     echo "- processing ${src_file}"
 
     directory=$( dirname ${src_file#${SOURCE_PCAPS}} )
@@ -52,13 +51,13 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     #cd ${DEST_DIR_ROOT}/${directory}/zeek_output/${filename}
 
     # Uncomment this command to process with Zeek, using the for572 policy
-    #zeek for572 -r ${src_file}
+    #zeek for572 -r ${src_file} 2> /dev/null
 
     # Uncomment this command to process with Zeek, using the for572-allfiles
     #   policy
     # This will take a LONG time and require a LOT of disk space! You probably
     #   DO NOT want to do this to ALL the capstone pcaps!!
-    #zeek for572-allfiles -r ${src_file}
+    #zeek for572-allfiles -r ${src_file} 2> /dev/null
 
 ###### PASSIVEDNS ######
     # Uncomment this one command to process with passivedns
@@ -72,4 +71,5 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     #   for your reference and future use as needed
     #mkdir -p ${DEST_DIR_ROOT}/${directory}/netflow/${filename}
     #nfpcapd -r ${src_file} -S 1 -z -l ${DEST_DIR_ROOT}/${directory}/netflow/${filename}
+
 done
