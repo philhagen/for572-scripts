@@ -86,10 +86,10 @@ rm -f /var/spool/mail/*
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
 echo "resetting Wireshark profiles"
-for ws_profile in no_desegment_tcp; do
-    rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
-    cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
-done
+#for ws_profile in no_desegment_tcp; do
+#    rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
+#    cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
+#done
 for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_db_paths; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
     if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
