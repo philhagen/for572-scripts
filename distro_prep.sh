@@ -90,7 +90,7 @@ echo "resetting Wireshark profiles"
 #    rm -rf ~sansforensics/.config/wireshark/profiles/${ws_profile}
 #    cp -a ~sansforensics/.config/wireshark/profiles/${ws_profile}.DIST ~sansforensics/.config/wireshark/profiles/${ws_profile}
 #done
-for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_db_paths; do
+for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_db_paths ssl_keys; do
     rm -f ~sansforensics/.config/wireshark/${rmfile}
     if [ -f ~sansforensics/.config/wireshark/${rmfile}.DIST ]; then
         cp -a ~sansforensics/.config/wireshark/${rmfile}.DIST ~sansforensics/.config/wireshark/${rmfile}
