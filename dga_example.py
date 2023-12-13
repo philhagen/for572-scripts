@@ -14,4 +14,4 @@ def generate_domain(year, month, day):
 
 for line in fileinput.input():
     (y, m, d) = line.split('-')
-    print generate_domain(int(y), int(m), int(d))
+    print(generate_domain(int(y), int(m), int(d)))
