@@ -1,5 +1,5 @@
 #!/bin/bash
-# (C)2023 Lewes Technology Consulting, LLC
+# (C)2024 Lewes Technology Consulting, LLC
 
 # This script will traverse a directory tree full of pcap files and run a set 
 #   of commands against each pcap file.
@@ -58,6 +58,9 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     # This will take a LONG time and require a LOT of disk space! You probably
     #   DO NOT want to do this to ALL the capstone pcaps!!
     #zeek for572-allfiles -r ${src_file} 2> /dev/null
+
+    # compress the log files just created before moving on
+    #gzip -f *.log
 
 ###### PASSIVEDNS ######
     # Uncomment this one command to process with passivedns
