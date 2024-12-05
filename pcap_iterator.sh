@@ -29,7 +29,12 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     directory=$( dirname ${src_file#${SOURCE_PCAPS}} )
     filename=$( basename $src_file )
     if [ ! -d ${DEST_DIR_ROOT}/${directory} ]; then
-        mkdir -p ${DEST_DIR_ROOT}/${directory}
+        mkdir -p ${DEST_DIR_ROOT}/${directory} 2> /dev/null
+        if [ ! -d ${DEST_DIR_ROOT}/${directory} ]; then
+            echo "ERROR: Could not create destination subdirectory ${DEST_DIR_ROOT}/${directory}."
+            echo "Exiting."
+            exit 2
+        fi
     elif [ ! -w ${DEST_DIR_ROOT}/${directory} ]; then
         echo "ERROR: Destination subdirectory ${DEST_DIR_ROOT}/${directory} exists but is not writable."
         echo "Exiting."
