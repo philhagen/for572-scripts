@@ -30,6 +30,10 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     filename=$( basename $src_file )
     if [ ! -d ${DEST_DIR_ROOT}/${directory} ]; then
         mkdir -p ${DEST_DIR_ROOT}/${directory}
+    elif [ ! -w ${DEST_DIR_ROOT}/${directory} ]; then
+        echo "ERROR: Destination subdirectory ${DEST_DIR_ROOT}/${directory} exists but is not writable."
+        echo "Exiting."
+        exit 2
     fi
 
 ###### TCPDUMP ######
