@@ -11,6 +11,17 @@
 SOURCE_PCAPS="/path/to/source/pcaps/"
 DEST_DIR_ROOT="/cases/for572/capstone/"
 
+if [ $UID == 0 ]; then
+    echo "WARNING! You're running this script as root (directly or with sudo)."
+    echo "         This may not be intended - since most evidence access should be done"
+    echo "         with user-level permissions."
+    echo "         Press Ctrl-C to terminate if you don't REALLY need to run this as root"
+    echo "         or press Return to continue if you truly know what you're doing."
+    echo
+    echo "   Hint: For all uses in FOR572 courseware, you DO NOT need to run this as root!"
+    read
+fi
+
 # Uncomment one or more of the annotated sections below, then run the script
 for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     echo "- processing ${src_file}"
