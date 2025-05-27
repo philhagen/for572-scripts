@@ -71,13 +71,13 @@ for src_file in $( find -L ${SOURCE_PCAPS} -type f ); do
     #cd ${DEST_DIR_ROOT}/${directory}/zeek_output/${filename}
 
     # Uncomment this command to process with Zeek, using the for572 policy
-    #zeek for572 -r ${src_file} 2> /dev/null
+    #zeek for572 -D -r ${src_file} 2> /dev/null
 
     # Uncomment this command to process with Zeek, using the for572-allfiles
     #   policy
     # This will take a LONG time and require a LOT of disk space! You probably
     #   DO NOT want to do this to ALL the capstone pcaps!!
-    #zeek for572-allfiles -r ${src_file} 2> /dev/null
+    #zeek for572-allfiles -D -r ${src_file} 2> /dev/null
 
     # compress the log files just created before moving on
     #gzip -f *.log
