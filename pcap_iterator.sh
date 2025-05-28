@@ -1,5 +1,5 @@
 #!/bin/bash
-# (C)2024 Lewes Technology Consulting, LLC
+# (C)2025 Lewes Technology Consulting, LLC
 
 # This script will traverse a directory tree full of pcap files and run a set 
 #   of commands against each pcap file.
@@ -10,6 +10,12 @@
 #   $DEST_DIR_ROOT, as the commands below may require a LOT of disk space.
 SOURCE_PCAPS="/path/to/source/pcaps/"
 DEST_DIR_ROOT="/cases/for572/capstone/"
+
+# Expand and normalize the two paths defined above.  Do not modify the following
+#   two lines
+SOURCE_PCAPS=$( eval echo ${SOURCE_PCAPS} )
+DEST_DIR_ROOT=$( eval echo ${DEST_DIR_ROOT} )
+# End expand/normalize handling
 
 if [ $UID == 0 ]; then
     echo "WARNING! You're running this script as root (directly or with sudo)."
