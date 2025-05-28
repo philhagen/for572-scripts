@@ -1,7 +1,7 @@
 #!/bin/bash
 # (C)2025 Lewes Technology Consulting, LLC
 
-# This script will traverse a directory tree full of pcap files and run a set 
+# This script traverses a directory tree full of pcap files and runs a series
 #   of commands against each pcap file.
 # As distributed, it's designed to handle the capstone data in FOR572, but you
 #   can adjust it as needed for other situations.
@@ -21,7 +21,7 @@ if [ $UID == 0 ]; then
     echo "WARNING! You're running this script as root (directly or with sudo)."
     echo "         This may not be intended - since most evidence access should be done"
     echo "         with user-level permissions."
-    echo "         Press Ctrl-C to terminate if you don't REALLY need to run this as root"
+    echo "         Press Ctrl-C to terminate if you don't really NEED to run this as root"
     echo "         or press Return to continue if you truly know what you're doing."
     echo
     echo "   Hint: For all uses in FOR572 courseware, you DO NOT need to run this as root!"
