@@ -43,10 +43,14 @@ if [ -s ~/distro_prep.txt ]; then
 fi
 echo
 
-echo "Please confirm the ~sansforensics/.ssh/* files are correct and free of detritus."
-echo "Press return if you've completed this."
-read
-echo
+if [ -d ~elk_user/.ssh/ ]; then
+    ssh_dir=$( find ~elk_user/.ssh/ -print )
+    if [ ! -z "${ssh_dir}" ]; then
+        echo "The following contents are in ~elk_user/.ssh/.  Press return if this is correct or Ctrl-C to quit."
+        echo "${ssh_dir}"
+        read
+    fi
+fi
 
 if [ $CASERELOAD -eq 1 ]; then
     if [ ! -d /mnt/hgfs/sample_pcaps/ -o ! -d /mnt/hgfs/lab_data/ ]; then
@@ -58,6 +62,16 @@ fi
 echo "updating for572-scripts git clone"
 cd /usr/local/for572/src/for572-scripts
 su - sansforensics -c "git pull"
+
+echo "removing old kernels"
+RUNNING_KERNEL=$( uname -r )
+apt --yes purge $( apt list --installed | grep -Ei 'linux-image|linux-headers|linux-modules' | grep -v ${RUNNING_KERNEL} | awk -F/ '{print $1}' )
+
+echo "removing unnecessary packages"
+apt --yes autoremove
+
+echo "cleaning apt caches"
+apt-get clean
 
 echo "updating for572 workbook"
 su - sansforensics -c "bash /var/www/html/workbook/resources/workbook-update.sh"
@@ -82,8 +96,6 @@ rm -f ~root/.viminfo
 rm -rf ~root/.cache/
 rm -f ~root/.wget-hsts
 rm -rf  /usr/local/for572/NetworkMiner_*/AssembledFiles/*
-rm -f /etc/GeoIP.conf
-rm -f /var/spool/mail/*
 mkdir -m 1777 /usr/local/for572/NetworkMiner/AssembledFiles/cache/
 
 echo "resetting Wireshark profiles"
@@ -98,12 +110,23 @@ for rmfile in rsa_keys recent recent_common preferences enabled_protos maxmind_d
     fi
 done
 
-echo "Resetting GeoIP data"
+echo "Resetting GeoIP databases to distributed versions."
+declare -A md5values
+md5values["ASN"]="c20977100c0a6c0842583ba158e906ec"
+md5values["City"]="4c60b3acf2e6782d48ce2b42979f7b98"
+md5values["Country"]="849e7667913e375bb3873f8778e8fb17"
 for GEOIPDB in ASN City Country; do
-    rm -f /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
-    curl -s -L -o /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb https://lewestech.com/dist/GeoLite2-${GEOIPDB}.mmdb
-    chmod 644 /usr/local/for572/share/GeoIP/GeoLite2-${GEOIPDB}.mmdb
+    file=GeoLite2-${GEOIPDB}.mmdb
+    local_path=/usr/local/share/GeoIP/${file}
+    md5=$( md5sum ${local_path} | awk '{print $1}' )
+    if [ ${md5} != ${md5values[${GEOIPDB}]} ]; then
+        echo "- ${local_path}"
+        rm -f ${local_path}
+        curl -s -L -o ${local_path} https://sof-elk.com/dist/${file}
+        chmod 644 ${local_path}
+    fi
 done
+rm -f /etc/GeoIP.conf
 rm -f /etc/cron.d/geoipupdate
 
 /sbin/ifconfig ens33 down
@@ -139,6 +162,26 @@ fi
 echo "clearing logs"
 service rsyslog stop
 find /var/log -type f -exec rm -f {} \;
+
+echo "clearing SSH Host Keys"
+systemctl stop ssh.socket
+rm -f /etc/ssh/*key*
+
+echo "clearing cron/at content"
+systemctl stop atd
+systemctl stop cron
+rm -f /var/spool/cron/atjobs/.SEQ
+rm -rf /var/spool/cron/atjobs/*
+
+echo "clearing mail spools"
+rm -f /var/spool/mail/*
+
+echo "clearing /tmp/"
+rm -rf /tmp/*
+
+echo "resetting machine-id and random-seed"
+echo "uninitialized" > /etc/machine-id
+rm -f /var/lib/systemd/random-seed
 
 echo "ACTION REQUIRED!"
 echo "remove any shared folders, touch up/re-version VM metadata/info, etc"
