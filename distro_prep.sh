@@ -179,10 +179,6 @@ rm -f /var/spool/mail/*
 echo "clearing /tmp/"
 rm -rf /tmp/*
 
-echo "resetting machine-id and random-seed"
-echo "uninitialized" > /etc/machine-id
-rm -f /var/lib/systemd/random-seed
-
 echo "ACTION REQUIRED!"
 echo "remove any shared folders, touch up/re-version VM metadata/info, etc"
 if df 2> /dev/null | grep -q hgfs; then
@@ -216,3 +212,7 @@ if [ $DISKSHRINK -eq 1 ]; then
         vmware-toolbox-cmd disk shrink ${shrinkpart}
     done
 fi
+
+echo "preparing for new auto-generated machine id and random seed"
+truncate -s 0 /etc/machine-id /var/lib/dbus/machine-id
+rm -f /var/lib/systemd/random-seed
