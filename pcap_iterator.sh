@@ -76,20 +76,7 @@ is_legacy_pcap() {
 process_pcap_file() {
     local src_file="$1"
 
-    local directory=$( dirname ${src_file#${SOURCE_PCAPS}} )
     local filename=$( basename $src_file )
-    if [ ! -d ${DEST_DIR_ROOT}/${directory} ]; then
-        mkdir -p ${DEST_DIR_ROOT}/${directory} 2> /dev/null
-        if [ ! -d ${DEST_DIR_ROOT}/${directory} ]; then
-            echo "ERROR: Could not create destination subdirectory ${DEST_DIR_ROOT}/${directory}."
-            echo "Exiting."
-            exit 2
-        fi
-    elif [ ! -w ${DEST_DIR_ROOT}/${directory} ]; then
-        echo "ERROR: Destination subdirectory ${DEST_DIR_ROOT}/${directory} exists but is not writable."
-        echo "Exiting."
-        exit 2
-    fi
 
     if ! is_legacy_pcap "${src_file}"; then
         echo "- WARNING: ${src_file} is not a pcap file - skipping"
@@ -99,8 +86,8 @@ process_pcap_file() {
     fi
 
     if ${PROCESS_TCPDUMP}; then
-        mkdir -p ${DEST_DIR_ROOT}/${directory}/tcpdump_reduced
-        tcpdump -n -s 0 -r ${src_file} -w ${DEST_DIR_ROOT}/${directory}/tcpdump_reduced/${PROCESS_TCPDUMP_TRAFFIC_TYPE}_${filename} ${PROCESS_TCPDUMP_BPF}
+        mkdir -p ${DEST_DIR_ROOT}/tcpdump_reduced
+        tcpdump -n -s 0 -r ${src_file} -w ${DEST_DIR_ROOT}/tcpdump_reduced/${PROCESS_TCPDUMP_TRAFFIC_TYPE}_${filename} ${PROCESS_TCPDUMP_BPF}
     fi
 
     if ${PROCESS_TRIMPCAP}; then
@@ -135,23 +122,34 @@ process_pcap_file() {
     fi
 
     if ${PROCESS_PASSIVEDNS}; then
-        passivedns -r ${src_file} -l ${DEST_DIR_ROOT}/${directory}/passivedns.txt -L ${DEST_DIR_ROOT}/${directory}/passivedns_nxdomain.txt
+	mkdir -p ${DEST_DIR_ROOT}/passivedns_output/
+        passivedns -r ${src_file} -l ${DEST_DIR_ROOT}/passivedns_output/passivedns.txt -L ${DEST_DIR_ROOT}/passivedns_output/passivedns_nxdomain.txt
     fi
 
     if ${PROCESS_NFCAPD}; then
-        mkdir -p ${DEST_DIR_ROOT}/${directory}/netflow/${filename}
-        nfpcapd -r ${src_file} -S 1 -z -l ${DEST_DIR_ROOT}/${directory}/netflow/${filename}
+        mkdir -p ${DEST_DIR_ROOT}/netflow/${filename}
+        nfpcapd -r ${src_file} -S 1 -z -l ${DEST_DIR_ROOT}/netflow/${filename}
     fi
 }
 
-source_files=(find -L ${SOURCE_PCAPS} -type f)
+
+# create an array of files in the source directory tree
+# non-pcap files will be ignored
+mapfile -t source_files < <( find -L "${SOURCE_PCAPS}" -type f )
 # Iterate across all files in the directory and process as configured in the variables above
+if [ ${NCORES} -gt 1 ]; then
+    echo "Using ${NCORES} CPUs for parallel processing"
+    echo
+fi
+
 for source_file in "${source_files[@]}"; do
+
     process_pcap_file "${source_file}" &
 
-    # Check number of background jobs; wait if > MAX_JOBS
+    # Check number of background jobs; wait if > NCORES
     if [ $(jobs -r | wc -l) -ge ${NCORES} ]; then
-        wait -n  # Wait for backgrounded function calls to finish before starting the next
+        wait -n  # Wait for any background job to finish before starting the next
     fi
 done
-wait # Wait for the last function calls to finish
+
+wait
