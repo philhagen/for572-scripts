@@ -132,7 +132,7 @@ process_pcap_file() {
     fi
 
     if ${PROCESS_PASSIVEDNS}; then
-	    mkdir -p ${DEST_DIR_ROOT}/passivedns_output/
+        mkdir -p ${DEST_DIR_ROOT}/passivedns_output/
         exec 500>>${DEST_DIR_ROOT}/passivedns_output/passivedns.txt
         exec 501>>${DEST_DIR_ROOT}/passivedns_output/passivedns_nxdomain.txt
 
