@@ -76,6 +76,9 @@ is_legacy_pcap() {
 process_pcap_file() {
     local src_file="$1"
 
+    # isolate just the directory path below ${SOURCE_PCAPS}
+    local directory=$( dirname ${src_file#${SOURCE_PCAPS}} )
+    # isolate just the filename portion
     local filename=$( basename $src_file )
 
     if ! is_legacy_pcap "${src_file}"; then
@@ -86,8 +89,15 @@ process_pcap_file() {
     fi
 
     if ${PROCESS_TCPDUMP}; then
-        mkdir -p ${DEST_DIR_ROOT}/tcpdump_reduced
-        tcpdump -n -s 0 -r ${src_file} -w ${DEST_DIR_ROOT}/tcpdump_reduced/${PROCESS_TCPDUMP_TRAFFIC_TYPE}_${filename} ${PROCESS_TCPDUMP_BPF}
+        local outfile="${DEST_DIR_ROOT}/tcpdump_reduced/${directory}/${PROCESS_TCPDUMP_TRAFFIC_TYPE}_${filename}"
+
+        mkdir -p ${DEST_DIR_ROOT}/tcpdump_reduced/${directory}
+        tcpdump -n -s 0 -r "${src_file}" -w "${outfile}" "${PROCESS_TCPDUMP_BPF}" 2> /dev/null
+
+        # remove created file if it's empty
+        if [ -f "${outfile}" ] && [ $(stat -c%s "${outfile}" ) -eq 24 ]; then
+            rm -f "${outfile}"
+        fi
     fi
 
     if ${PROCESS_TRIMPCAP}; then
@@ -122,8 +132,27 @@ process_pcap_file() {
     fi
 
     if ${PROCESS_PASSIVEDNS}; then
-	mkdir -p ${DEST_DIR_ROOT}/passivedns_output/
-        passivedns -r ${src_file} -l ${DEST_DIR_ROOT}/passivedns_output/passivedns.txt -L ${DEST_DIR_ROOT}/passivedns_output/passivedns_nxdomain.txt
+	    mkdir -p ${DEST_DIR_ROOT}/passivedns_output/
+        exec 500>>${DEST_DIR_ROOT}/passivedns_output/passivedns.txt
+        exec 501>>${DEST_DIR_ROOT}/passivedns_output/passivedns_nxdomain.txt
+
+        # place log events into temp files for later aggregation using file locking
+        local temp_pdns_log=$( mktemp )
+        local temp_pdns_nxlog=$( mktemp )
+        passivedns -q -r ${src_file} -l ${temp_pdns_log} -L ${temp_pdns_nxlog}
+
+        # lock, populate, and unlock the passivedns.txt file
+        flock -x 500
+        cat ${temp_pdns_log} >> ${DEST_DIR_ROOT}/passivedns_output/passivedns.txt
+        flock -u 500
+
+        # lock, populate, and unlock the passivedns_nxdomain.txt file
+        flock -x 501
+        cat ${temp_pdns_nxlog} >> ${DEST_DIR_ROOT}/passivedns_output/passivedns_nxdomain.txt
+        flock -u 501
+
+        # remove temp files
+        rm -f ${temp_pdns_log} ${temp_pdns_nxlog}
     fi
 
     if ${PROCESS_NFCAPD}; then
