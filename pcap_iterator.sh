@@ -115,7 +115,7 @@ process_pcap_file() {
         local endts=$( echo ${pcapmeta} | awk -F, '{print $3}' | tr -d '"' )
         local endtime=$( echo ${endts} | awk '{print $2}' | sed -e 's/\..*//' )
 
-        local destdir="${DEST_DIR_ROOT}/${directory}/zeek_output/${startdate}"
+        local destdir="${DEST_DIR_ROOT}/zeek_output/${startdate}"
         mkdir -p ${destdir}
 
         cd ${tempdir}
